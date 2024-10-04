@@ -41,7 +41,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Start the application using local PM2
-                sh './node_modules/.bin/pm2 start server.js --name winesjs --watch'
+                sh 'pm2 start wines.js'
                 echo 'Application deployed successfully!'
             }
         }
