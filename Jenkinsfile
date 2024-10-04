@@ -15,13 +15,6 @@ pipeline {
             }
         }
 
-        stage('Install PM2') {
-            steps {
-                // Install PM2 locally
-                sh 'npm install pm2 --save-dev'
-            }
-        }
-
         stage('Build') {
             steps {
                 // Example build command; update as needed
