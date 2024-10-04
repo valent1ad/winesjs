@@ -31,12 +31,11 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                // Deploy the application (customize this command as per your deployment process)
-                sh 'node server.js &'
-                echo 'Application deployed successfully!'
-            }
-        }
+               // Start the application using PM2
+               sh 'pm2 start server.js --name winesjs --watch'
+               echo 'Application deployed successfully!'
     }
+}
 
     post {
         always {
