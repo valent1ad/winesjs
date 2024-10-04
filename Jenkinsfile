@@ -4,8 +4,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Clone the repository
-                git 'https://github.com/valent1ad/winesjs.git'
+                // Checkout the main branch
+                checkout([$class: 'GitSCM', 
+                    branches: [[name: '*/main']], 
+                    userRemoteConfigs: [[url: 'https://github.com/valent1ad/winesjs.git']]
+                ])
             }
         }
         stage('Install Dependencies') {
