@@ -18,8 +18,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                // You can include any build steps if needed, for example, transpiling with Babel or Webpack
-                // For simplicity, we'll skip this step since it's a basic Node.js app
+                // You can include any build steps if needed
                 echo 'Build stage (if any build steps are needed)'
             }
         }
@@ -41,14 +40,8 @@ pipeline {
 
     post {
         always {
-            // Cleanup: Optionally, you can add steps to stop PM2 or cleanup workspace
+            // Optional: Add any cleanup actions or notifications
             echo 'Pipeline finished.'
         }
     }
-
-    // Optional: If you want to limit the execution to the main branch only
-    options {
-        disableConcurrentBuilds() // Prevent concurrent builds for the same branch
-    }
-
-    // Add a condition to the pipeline to only run on the main branch
+}
