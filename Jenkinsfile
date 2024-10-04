@@ -20,7 +20,7 @@ pipeline {
         stage('Install PM2') {
             steps {
                 // Install PM2 globally
-                sh 'npm install -g pm2'
+                sh 'sudo npm install -g pm2'
             }
         }
         stage('Build') {
@@ -38,7 +38,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Start the application using PM2 in the background
-                sh 'pm2 start server.js --name winesjs --watch'
+                sh 'sudo pm2 start server.js --name winesjs --watch'
                 echo 'Application deployed successfully!'
             }
         }
