@@ -44,7 +44,7 @@ pipeline {
         always {
             script {
                 // Check the PM2 status
-                sh './node_modules/.bin/pm2 status'
+                sh 'pm2 status'
             }
         }
     }
