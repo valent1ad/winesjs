@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout SCM') {
             steps {
                 // Checkout your code from the Git repository
-                git 'https://github.com/valent1ad/winesjs/'
+                git branch: 'main', url: 'https://github.com/valent1ad/winesjs/'
             }
         }
 
@@ -45,4 +45,10 @@ pipeline {
             echo 'Pipeline finished.'
         }
     }
-}
+
+    // Optional: If you want to limit the execution to the main branch only
+    options {
+        disableConcurrentBuilds() // Prevent concurrent builds for the same branch
+    }
+
+    // Add a condition to the pipeline to only run on the main branch
