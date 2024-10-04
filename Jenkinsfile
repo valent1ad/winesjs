@@ -1,54 +1,56 @@
 pipeline {
-    agent any 
+    agent any
 
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
-                // Checkout the main branch
-                checkout([$class: 'GitSCM', 
-                    branches: [[name: '*/main']], 
-                    userRemoteConfigs: [[url: 'https://github.com/valent1ad/winesjs.git']]
-                ])
+                checkout scm
             }
         }
+
         stage('Install Dependencies') {
             steps {
-                // Install dependencies
+                // Install project dependencies
                 sh 'npm install'
             }
         }
+
         stage('Install PM2') {
             steps {
-                // Install PM2 globally
-                sh 'sudo npm install -g pm2'
+                // Install PM2 locally
+                sh 'npm install pm2 --save-dev'
             }
         }
+
         stage('Build') {
             steps {
-                // Optional: Add build commands if needed
-                echo 'Building the application...'
+                // Build your application here if necessary
+                // Example: sh 'npm run build'
             }
         }
+
         stage('Run Tests') {
             steps {
-                // Optional: Add test commands if needed
-                echo 'Running tests...'
+                // Run your tests here if necessary
+                // Example: sh 'npm test'
             }
         }
+
         stage('Deploy') {
             steps {
-                // Start the application using PM2 in the background
-                sh 'sudo pm2 start server.js --name winesjs --watch'
+                // Start the application using local PM2
+                sh './node_modules/.bin/pm2 start server.js --name winesjs --watch'
                 echo 'Application deployed successfully!'
             }
         }
     }
-    
+
     post {
         always {
-            echo 'Pipeline completed.'
-            // Optional: display the status of the PM2 processes
-            sh 'pm2 status'
+            script {
+                // Check the PM2 status
+                sh './node_modules/.bin/pm2 status'
+            }
         }
     }
 }
