@@ -26,7 +26,7 @@ pipeline {
         stage('Run Application in Background') {
             steps {
                 // Use Forever to run the application in the background
-                sh 'forever start server.js --uid winesjs --watch'
+                sh 'forever start --uid "winesjs" -c "node" server.js'
             }
         }
 
