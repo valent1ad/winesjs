@@ -4,48 +4,45 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
-                checkout scm
+                // Checkout your code from the Git repository
+                git 'https://github.com/valent1ad/winesjs/'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install project dependencies
+                // Install Node.js dependencies
                 sh 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                // Example build command; update as needed
-                // sh 'npm run build'
-                echo 'Build stage is currently empty; please add your build commands here.'
+                // You can include any build steps if needed, for example, transpiling with Babel or Webpack
+                // For simplicity, we'll skip this step since it's a basic Node.js app
+                echo 'Build stage (if any build steps are needed)'
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Application in Background') {
             steps {
-                // Example test command; update as needed
-                // sh 'npm test'
-                echo 'Test stage is currently empty; please add your test commands here.'
+                // Use PM2 to run the application in the background
+                sh 'pm2 start server.js --name winesjs --watch'
             }
         }
 
-        stage('Deploy') {
+        stage('Check PM2 Status') {
             steps {
-                // Start the application using local PM2
-                sh 'pm2 start wines.js'
-                echo 'Application deployed successfully!'
+                // Check PM2 status to confirm the application is running
+                sh 'pm2 status'
             }
         }
     }
 
     post {
         always {
-            script {
-                // Check the PM2 status
-                sh 'pm2 status'
-            }
+            // Cleanup: Optionally, you can add steps to stop PM2 or cleanup workspace
+            echo 'Pipeline finished.'
         }
     }
 }
