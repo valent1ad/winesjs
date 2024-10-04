@@ -24,15 +24,17 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Build your application here if necessary
-                // Example: sh 'npm run build'
+                // Example build command; update as needed
+                // sh 'npm run build'
+                echo 'Build stage is currently empty; please add your build commands here.'
             }
         }
 
         stage('Run Tests') {
             steps {
-                // Run your tests here if necessary
-                // Example: sh 'npm test'
+                // Example test command; update as needed
+                // sh 'npm test'
+                echo 'Test stage is currently empty; please add your test commands here.'
             }
         }
 
