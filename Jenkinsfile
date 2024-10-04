@@ -25,15 +25,15 @@ pipeline {
 
         stage('Run Application in Background') {
             steps {
-                // Use PM2 to run the application in the background
-                sh 'pm2 start server.js --name winesjs --watch'
+                // Use Forever to run the application in the background
+                sh 'forever start server.js --uid winesjs --watch'
             }
         }
 
-        stage('Check PM2 Status') {
+        stage('Check Forever Status') {
             steps {
-                // Check PM2 status to confirm the application is running
-                sh 'pm2 status'
+                // Check Forever status to confirm the application is running
+                sh 'forever list'
             }
         }
     }
