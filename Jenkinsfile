@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout SCM') {
             steps {
                 // Checkout your code from the Git repository
-                git branch: 'main', url: 'https://github.com/valent1ad/winesjs/'
+                git 'https://github.com/valent1ad/winesjs/'
             }
         }
 
