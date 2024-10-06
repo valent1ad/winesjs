@@ -60,21 +60,26 @@ pipeline {
         }
         
         stage('Patch OpenAPI Enforcement') {
-            steps {
-                script {
-                    // Send the PATCH request with the UID
-                    sh ''' 
-                        curl -k --location --request PATCH 'https://10.255.250.253:3001/api/v1/openapi-enforcement?uid=${fileuid}' \
-                        --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
-                        --header 'Content-Type: application/json' \
-                        --data '{
-                            "name": "winesapiie7",
-                            "description": "OpenApi description",
-                            "file": "${fileuid}"
-                        }'
-                    '''
-                }
-            }
+    steps {
+        script {
+            // Echo the UID for debugging
+            echo "Using File UID: ${fileuid}"
+            
+            // Construct and send the PATCH request
+            def patchCommand = """ 
+                curl -k --location --request PATCH 'https://10.255.250.253:3001/api/v1/openapi-enforcement?uid=${fileuid}' \
+                --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
+                --header 'Content-Type: application/json' \
+                --data '{
+                    "name": "winesapiie7",
+                    "description": "OpenApi description",
+                    "file": "${fileuid}"
+                }'
+            """
+            echo "Executing PATCH command: ${patchCommand}"
+            
+            // Execute the command
+            sh patchCommand
         }
     }
 
