@@ -9,31 +9,27 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build Docker Image') {
             steps {
-                // Install Node.js dependencies
-                sh 'npm install'
+                // Build the Docker image
+                sh 'docker build -t winesjs .'
             }
         }
 
-        stage('Build') {
+        stage('Run Docker Container') {
             steps {
-                // You can include any build steps if needed
-                echo 'Build stage (if any build steps are needed)'
+                // Stop and remove any existing container with the same name
+                sh 'docker rm -f winesjs || true'
+                
+                // Run the Docker container
+                sh 'docker run -d -p 3000:3000 --name winesjs winesjs'
             }
         }
 
-        stage('Run Application in Background') {
+        stage('Check Docker Status') {
             steps {
-                // Use Forever to run the application in the background
-                sh 'forever start --uid "winesjs" -c "node" server.js'
-            }
-        }
-
-        stage('Check Forever Status') {
-            steps {
-                // Check Forever status to confirm the application is running
-                sh 'forever list'
+                // Check if the Docker container is running
+                sh 'docker ps -a'
             }
         }
     }
