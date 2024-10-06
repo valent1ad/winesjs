@@ -67,7 +67,7 @@ pipeline {
                     
                     // Construct and send the PATCH request
                     def patchCommand = """ 
-                        curl -k --location --request PATCH 'https://10.255.250.253:3001/api/v1/openapi-enforcement?uid=${fileuid}' \
+                        curl -k --location --request PATCH 'https://10.255.250.253:3001/api/v1/openapi-enforcement?uid=1af302933e76e4feedd65836745f5dfa' \
                         --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
                         --header 'Content-Type: application/json' \
                         --data '{
