@@ -60,7 +60,7 @@ pipeline {
         }
         
         stage('Patch OpenAPI Enforcement') {
-    steps {
+        steps {
         script {
             // Echo the UID for debugging
             echo "Using File UID: ${fileuid}"
@@ -80,9 +80,9 @@ pipeline {
             
             // Execute the command
             sh patchCommand
+             }
+            }
         }
-    }
-
     post {
         always {
             // Optional: Add any cleanup actions or notifications
