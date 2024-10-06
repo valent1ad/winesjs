@@ -53,8 +53,7 @@ pipeline {
                     ''', returnStdout: true).trim()
                     
                     // Extract the UID from the response (assuming the response is JSON)
-                    def jsonResponse = readJSON text: response
-                    env.fileuid = jsonResponse.uid // Store UID in environment variable
+                    env.fileuid = sh(script: "echo '${response}' | jq -r '.uid'", returnStdout: true).trim()
                     echo "File UID: ${env.fileuid}"
                 }
             }
