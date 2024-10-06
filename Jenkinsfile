@@ -71,8 +71,6 @@ pipeline {
                         --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
                         --header 'Content-Type: application/json' \
                         --data '{
-                            "name": "winesapiie7",
-                            "description": "OpenApi description",
                             "file": "${fileuid}"
                         }'
                     """
