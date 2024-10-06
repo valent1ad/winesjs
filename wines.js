@@ -1,35 +1,142 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const app = express();
-const port = 3000; // Choisissez un port pour le serveur
-app.use(bodyParser.json()); // Middleware pour analyser le corps des requêtes JSON
+const port = 3000; // Choose a port for the server
+app.use(bodyParser.json()); // Middleware to parse JSON request bodies
 
 let wines = [];
 
-// Modèle pour le vin (juste pour référence, pas de validation automatique)
-const wineModel = {
-    id: null,
-    name: '',
-    year: null,
-    grape: '',
-    country: ''
+// Swagger definition
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Wine API',
+      version: '1.0.0',
+      description: 'A simple API to manage wines',
+    },
+  },
+  apis: ['./wines.js'], // Path to your API docs
 };
 
-// Route pour obtenir la liste des vins
+// Swagger setup
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// Wine model (for reference, not auto-validated)
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Wine:
+ *       type: object
+ *       required:
+ *         - name
+ *         - year
+ *         - grape
+ *         - country
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The auto-generated ID of the wine
+ *         name:
+ *           type: string
+ *           description: The name of the wine
+ *         year:
+ *           type: integer
+ *           description: The year the wine was produced
+ *         grape:
+ *           type: string
+ *           description: The grape variety of the wine
+ *         country:
+ *           type: string
+ *           description: The country of origin of the wine
+ *       example:
+ *         id: 1
+ *         name: Merlot
+ *         year: 2020
+ *         grape: Merlot
+ *         country: France
+ */
+
+// Route to get the list of wines
+/**
+ * @swagger
+ * /wines:
+ *   get:
+ *     summary: Returns the list of all wines
+ *     tags: [Wines]
+ *     responses:
+ *       200:
+ *         description: The list of wines
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Wine'
+ */
 app.get('/wines', (req, res) => {
     res.json(wines);
 });
 
-// Route pour créer un nouveau vin
+// Route to create a new wine
+/**
+ * @swagger
+ * /wines:
+ *   post:
+ *     summary: Create a new wine
+ *     tags: [Wines]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Wine'
+ *     responses:
+ *       201:
+ *         description: The wine was successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Wine'
+ *       500:
+ *         description: Some server error
+ */
 app.post('/wines', (req, res) => {
     const wine = req.body;
-    wine.id = wines.length + 1; // Assigner un ID unique
+    wine.id = wines.length + 1; // Assign a unique ID
     wines.push(wine);
     res.status(201).json(wine);
 });
 
-// Route pour obtenir un vin spécifique par ID
+// Route to get a specific wine by ID
+/**
+ * @swagger
+ * /wines/{id}:
+ *   get:
+ *     summary: Get a wine by ID
+ *     tags: [Wines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The wine ID
+ *     responses:
+ *       200:
+ *         description: The wine description by ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Wine'
+ *       404:
+ *         description: Wine not found
+ */
 app.get('/wines/:id', (req, res) => {
     const wineId = parseInt(req.params.id, 10);
     const wine = wines.find(w => w.id === wineId);
@@ -39,14 +146,33 @@ app.get('/wines/:id', (req, res) => {
     res.json(wine);
 });
 
-// Route pour supprimer un vin par ID
+// Route to delete a wine by ID
+/**
+ * @swagger
+ * /wines/{id}:
+ *   delete:
+ *     summary: Remove a wine by ID
+ *     tags: [Wines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The wine ID
+ *     responses:
+ *       204:
+ *         description: The wine was deleted successfully
+ *       404:
+ *         description: Wine not found
+ */
 app.delete('/wines/:id', (req, res) => {
     const wineId = parseInt(req.params.id, 10);
     wines = wines.filter(w => w.id !== wineId);
-    res.status(204).send(); // Pas de contenu à retourner
+    res.status(204).send(); // No content to return
 });
 
-// Démarrage du serveur
+// Start the server
 app.listen(port, () => {
     console.log(`Wine API is running at http://localhost:${port}`);
 });
