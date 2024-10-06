@@ -44,6 +44,7 @@ app.get('/swagger.json', (req, res) => {
  *         - year
  *         - grape
  *         - country
+ *         - price
  *       properties:
  *         id:
  *           type: integer
@@ -53,19 +54,26 @@ app.get('/swagger.json', (req, res) => {
  *           description: The name of the wine
  *         year:
  *           type: integer
- *           description: The year the wine was produced
+ *           description: The year the wine was produced (4 digits)
+ *           minimum: 1900
+ *           maximum: 2100
  *         grape:
  *           type: string
  *           description: The grape variety of the wine
  *         country:
  *           type: string
  *           description: The country of origin of the wine
+ *         price:
+ *           type: string
+ *           pattern: '^\\d+(\\.\\d{2})?$' // Regular expression for XX.XX format
+ *           description: The price of the wine (format: XX.XX)
  *       example:
  *         id: 1
  *         name: Merlot
  *         year: 2020
  *         grape: Merlot
  *         country: France
+ *         price: "15.99" // Example price
  */
 
 // Route to get the list of wines
@@ -114,6 +122,18 @@ app.get('/wines', (req, res) => {
  */
 app.post('/wines', (req, res) => {
     const wine = req.body;
+
+    // Validate the year to ensure it's a 4-digit number
+    if (wine.year < 1900 || wine.year > 2100) {
+        return res.status(400).send('Year must be a 4-digit number between 1900 and 2100.');
+    }
+
+    // Validate the price format
+    const pricePattern = /^\d+(\.\d{2})?$/; // Matches XX.XX format
+    if (!pricePattern.test(wine.price)) {
+        return res.status(400).send('Price must be in the format XX.XX.');
+    }
+
     wine.id = wines.length + 1; // Assign a unique ID
     wines.push(wine);
     res.status(201).json(wine);
