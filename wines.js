@@ -18,6 +18,51 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'A simple API to manage wines',
     },
+    components: {
+      schemas: {
+        Wine: {
+          type: 'object',
+          required: ['name', 'year', 'grape', 'country', 'price'],
+          properties: {
+            id: {
+              type: 'integer',
+              description: 'The auto-generated ID of the wine',
+            },
+            name: {
+              type: 'string',
+              description: 'The name of the wine',
+            },
+            year: {
+              type: 'integer',
+              description: 'The year the wine was produced (4 digits)',
+              minimum: 1900,
+              maximum: 2100,
+            },
+            grape: {
+              type: 'string',
+              description: 'The grape variety of the wine',
+            },
+            country: {
+              type: 'string',
+              description: 'The country of origin of the wine',
+            },
+            price: {
+              type: 'string',
+              pattern: '^\\d+(\\.\\d{2})?$', // Regular expression for XX.XX format
+              description: 'The price of the wine (format: XX.XX)',
+            },
+          },
+          example: {
+            id: 1,
+            name: 'Merlot',
+            year: 2020,
+            grape: 'Merlot',
+            country: 'France',
+            price: '15.99', // Example price
+          },
+        },
+      },
+    },
   },
   apis: ['./wines.js'], // Path to your API docs
 };
@@ -31,50 +76,6 @@ app.get('/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerDocs);
 });
-
-// Wine model (for reference, not auto-validated)
-/**
- * @swagger
- * components:
- *   schemas:
- *     Wine:
- *       type: object
- *       required:
- *         - name
- *         - year
- *         - grape
- *         - country
- *         - price
- *       properties:
- *         id:
- *           type: integer
- *           description: The auto-generated ID of the wine
- *         name:
- *           type: string
- *           description: The name of the wine
- *         year:
- *           type: integer
- *           description: The year the wine was produced (4 digits)
- *           minimum: 1900
- *           maximum: 2100
- *         grape:
- *           type: string
- *           description: The grape variety of the wine
- *         country:
- *           type: string
- *           description: The country of origin of the wine
- *         price:
- *           type: string
- *           pattern: '^\\d+(\\.\\d{2})?$' // Regular expression for XX.XX format
- *           description: The price of the wine (format: XX.XX)
- *       example:
- *         id: 1
- *         name: Merlot
- *         year: 2020
- *         grape: Merlot
- *         country: France
- *         price: "15.99" // Example price
- */
 
 // Route to get the list of wines
 /**
@@ -117,8 +118,8 @@ app.get('/wines', (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Wine'
- *       500:
- *         description: Some server error
+ *       400:
+ *         description: Bad request
  */
 app.post('/wines', (req, res) => {
     const wine = req.body;
