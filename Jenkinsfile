@@ -70,7 +70,7 @@ pipeline {
                         --data '{
                             "name": "winesapiie7",
                             "description": "OpenApi description",
-                            "file": "${fileuid}"
+                            "file": "${env.fileuid}"
                         }'
                     '''
                 }
