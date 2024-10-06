@@ -64,7 +64,7 @@ const swaggerOptions = {
       },
     },
   },
-  apis: ['./wines.js'], // Path to your API docs
+  // Removed the apis key as we are defining all routes here
 };
 
 // Swagger setup
