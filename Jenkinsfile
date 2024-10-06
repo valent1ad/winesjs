@@ -81,6 +81,24 @@ pipeline {
                 }
             }
         }
+        stage('Apply Configuration') {
+            steps {
+                script {
+                    sh '''
+                    curl -k --location 'https://10.255.250.253:3001/api/v1/apply' \
+                    --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
+                    --header 'Content-Type: application/json' \
+                    --data '{
+                    "tunnels":[
+                        {"uid":"895d3a5698ef19e949be3fa9bfab1d73"},
+                        {"uid":"cc243daf12bbe77a7b4eb0aea5a22902"}
+                        ],
+                        "coldRestart":false
+                    }'
+                    '''
+                }
+            }
+        }
     }
 
     post {
