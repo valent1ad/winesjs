@@ -9,7 +9,6 @@ app.use(bodyParser.json()); // Middleware to parse JSON request bodies
 
 let wines = [];
 
-// Swagger definition
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -64,7 +63,7 @@ const swaggerOptions = {
       },
     },
   },
-  // Removed the apis key as we are defining all routes here
+  apis: ['./server.js'], // Use this file as the source of Swagger JSDoc comments
 };
 
 // Swagger setup
