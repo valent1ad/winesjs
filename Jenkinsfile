@@ -33,40 +33,48 @@ pipeline {
             }
         }
 
-        stage('Upload OpenAPI Swagger') {
+        stage('Download Swagger File') {
             steps {
-                // Upload the OpenAPI Swagger file using curl
                 script {
-                    // Fetch the OpenAPI JSON file
+                    // Download the Swagger file
                     sh 'curl http://localhost:3000/swagger.json -o openapi.json'
-
-                    // Upload the OpenAPI JSON file
-                    def response = sh(script: '''
-                        curl -k --location 'https://10.255.250.253:3001/api/v1/files' \
-                        --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
-                        --form 'file=@openapi.json'
-                    ''', returnStdout: true).trim()
-
-                    // Extract the file ID from the response (assuming it's in JSON format)
-                    def jsonResponse = readJSON text: response
-                    env.fileid = jsonResponse.fileid // Adjust this based on the actual response structure
                 }
             }
         }
-
-        stage('Update OpenAPI with Uploaded File') {
+        
+        stage('Upload Swagger File') {
             steps {
-                // Update the OpenAPI with the uploaded file ID
-                sh '''
-                    curl -k --location --request PATCH 'https://10.255.250.253:3001/api/v1/openapi-enforcement?uid=d8cbb0eb761b019bba2ef5389019416f' \
-                    --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
-                    --header 'Content-Type: application/json' \
-                    --data '{
-                        "name": "winesapiie7",
-                        "description": "OpenApi description",
-                        "file": "${fileid}"
-                    }'
-                '''
+                script {
+                    // Upload the Swagger file and capture the response
+                    def response = sh(script: ''' 
+                        curl -k --location 'https://10.255.250.253:3001/api/v1/files' \
+                        --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
+                        --form 'file=@"openapi.json"'
+                    ''', returnStdout: true).trim()
+                    
+                    // Extract the UID from the response (assuming the response is JSON)
+                    def jsonResponse = readJSON text: response
+                    env.fileuid = jsonResponse.uid // Store UID in environment variable
+                    echo "File UID: ${env.fileuid}"
+                }
+            }
+        }
+        
+        stage('Patch OpenAPI Enforcement') {
+            steps {
+                script {
+                    // Send the PATCH request with the UID
+                    sh ''' 
+                        curl -k --location --request PATCH 'https://10.255.250.253:3001/api/v1/openapi-enforcement?uid=${fileuid}' \
+                        --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
+                        --header 'Content-Type: application/json' \
+                        --data '{
+                            "name": "winesapiie7",
+                            "description": "OpenApi description",
+                            "file": "${fileuid}"
+                        }'
+                    '''
+                }
             }
         }
     }
