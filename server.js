@@ -1,52 +1,51 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const app = express();
-const port = 3000; // Choisissez un port pour le serveur
-app.use(bodyParser.json()); // Middleware pour analyser le corps des requêtes JSON
 
-let wines = [];
-
-// Modèle pour le vin (juste pour référence, pas de validation automatique)
-const wineModel = {
-    id: null,
-    name: '',
-    year: null,
-    grape: '',
-    country: ''
+// Swagger definition
+const swaggerDefinition = {
+    openapi: '3.0.0',
+    info: {
+        title: 'WinesJS API', // API Title
+        version: '1.0.0', // API version
+        description: 'API Documentation for WinesJS', // Short description
+        contact: {
+            name: "Valentin",
+            url: "https://github.com/valent1ad/winesjs",
+        }
+    },
+    servers: [
+        {
+            url: 'http://localhost:3000', // Change this to the base URL of your API
+            description: 'Development server'
+        }
+    ]
 };
 
-// Route pour obtenir la liste des vins
-app.get('/wines', (req, res) => {
-    res.json(wines);
+// Options for the swagger docs
+const options = {
+    swaggerDefinition,
+    apis: ['./routes/*.js'], // Path to the API docs (you may need to change this path)
+};
+
+// Initialize swagger-jsdoc
+const swaggerSpec = swaggerJsdoc(options);
+
+// Serve Swagger docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Example route
+app.get('/', (req, res) => {
+    res.send('WinesJS API running');
 });
 
-// Route pour créer un nouveau vin
-app.post('/wines', (req, res) => {
-    const wine = req.body;
-    wine.id = wines.length + 1; // Assigner un ID unique
-    wines.push(wine);
-    res.status(201).json(wine);
-});
+// Define API routes
+// e.g. app.use('/wines', winesRouter);
 
-// Route pour obtenir un vin spécifique par ID
-app.get('/wines/:id', (req, res) => {
-    const wineId = parseInt(req.params.id, 10);
-    const wine = wines.find(w => w.id === wineId);
-    if (!wine) {
-        return res.status(404).send(`Wine ${wineId} doesn't exist`);
-    }
-    res.json(wine);
-});
-
-// Route pour supprimer un vin par ID
-app.delete('/wines/:id', (req, res) => {
-    const wineId = parseInt(req.params.id, 10);
-    wines = wines.filter(w => w.id !== wineId);
-    res.status(204).send(); // Pas de contenu à retourner
-});
-
-// Démarrage du serveur
+// Listen on port 3000
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`Wine API is running at http://localhost:${port}`);
+    console.log(`Server is running on port ${port}`);
+    console.log(`Swagger docs available at http://localhost:${port}/api-docs`);
 });
