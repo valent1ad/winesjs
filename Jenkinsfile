@@ -42,7 +42,7 @@ pipeline {
 
                     // Upload the OpenAPI JSON file
                     def response = sh(script: '''
-                        curl --location 'https://10.255.250.253:3001/api/v1/files' \
+                        curl -k --location 'https://10.255.250.253:3001/api/v1/files' \
                         --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
                         --form 'file=@openapi.json'
                     ''', returnStdout: true).trim()
@@ -58,7 +58,7 @@ pipeline {
             steps {
                 // Update the OpenAPI with the uploaded file ID
                 sh '''
-                    curl --location --request PATCH 'https://10.255.250.253:3001/api/v1/openapi-enforcement?uid=d8cbb0eb761b019bba2ef5389019416f' \
+                    curl -k --location --request PATCH 'https://10.255.250.253:3001/api/v1/openapi-enforcement?uid=d8cbb0eb761b019bba2ef5389019416f' \
                     --header 'Authorization: Bearer dmFsZW50aW4=@bc04067c051b4c48763914aab4307ee9' \
                     --header 'Content-Type: application/json' \
                     --data '{
