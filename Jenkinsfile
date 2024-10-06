@@ -53,7 +53,7 @@ pipeline {
                     ''', returnStdout: true).trim()
                     
                     // Extract the UID from the response (assuming the response is JSON)
-                    env.fileuid = sh(script: "echo '${response}' | jq -r '.uid'", returnStdout: true).trim()
+                    env.fileuid = sh(script: "echo '${response}' | jq -r '.data.uid'", returnStdout: true).trim()
                     echo "File UID: ${env.fileuid}"
                 }
             }
@@ -70,7 +70,7 @@ pipeline {
                         --data '{
                             "name": "winesapiie7",
                             "description": "OpenApi description",
-                            "file": "${env.fileuid}"
+                            "file": "${fileuid}"
                         }'
                     '''
                 }
