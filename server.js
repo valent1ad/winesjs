@@ -21,7 +21,7 @@ const swaggerOptions = {
       schemas: {
         Wine: {
           type: 'object',
-          required: ['name', 'year', 'grape', 'country', 'price', 'quantity'],
+          required: ['name', 'year', 'grape', 'country', 'price'],
           properties: {
             id: {
               type: 'integer',
@@ -50,11 +50,6 @@ const swaggerOptions = {
               pattern: '^\\d+(\\.\\d{2})?$', // Regular expression for XX.XX format
               description: 'The price of the wine (format: XX.XX)',
             },
-            quantity: {
-              type: 'integer',
-              description: 'The available quantity of the wine',
-              minimum: 0,
-            },
           },
           example: {
             id: 1,
@@ -63,7 +58,6 @@ const swaggerOptions = {
             grape: 'Merlot',
             country: 'France',
             price: '15.99', // Example price
-            quantity: 50,
           },
         },
       },
@@ -138,11 +132,6 @@ app.post('/wines', (req, res) => {
     const pricePattern = /^\d+(\.\d{2})?$/; // Matches XX.XX format
     if (!pricePattern.test(wine.price)) {
         return res.status(400).send('Price must be in the format XX.XX.');
-    }
-
-    // Validate quantity is non-negative
-    if (wine.quantity < 0) {
-        return res.status(400).send('Quantity must be a non-negative integer.');
     }
 
     wine.id = wines.length + 1; // Assign a unique ID
